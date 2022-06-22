@@ -1,22 +1,27 @@
-console.log("hello world!");
 let userWin = 0;
 let computerWin = 0;
 
-const selection = ["rock", "paper", "scissors"];
+const buttons = document.querySelectorAll('button');
+const selection = Array.from(buttons).map(button => button.textContent.toLowerCase());
+console.log(selection);
+
+buttons.forEach(button => {
+    button.addEventListener('click', playGame);
+})
+
+
 function computerPlay() {
     let randomNumber = Math.floor(Math.random() * 3);   //return a number between 0-2
     return selection[randomNumber];
 }
 
-function playerPlay() {
-    let playerSelection = Number(prompt("1->rock, 2->paper, 3->scissrs"));
-    
-    if(isNaN(playerSelection) || playerSelection < 1 || playerSelection > 3) {
-        console.log("NOT A VALID INPUT!!");
-        return;
-    }
-    return selection[playerSelection-1];
-}
+
+
+// function playerPlay(e) {
+//     // let playerSelection = Number(prompt("1->rock, 2->paper, 3->scissors"));
+//     console.log(e.target.textContent.toLowerCase());
+//     return e.target.textContent.toLowerCase();
+// }
 
 function playRound(playerSelect, computerSelect) {
     let result = "";
@@ -42,22 +47,38 @@ function playRound(playerSelect, computerSelect) {
     return result;
 }
 
-function playGame() {
-    for(let i=0; i<5; i++) {
-        let playerSelection = playerPlay();
-        let computerSelection = computerPlay();
-        let result;
-        result = playRound(playerSelection, computerSelection);
-        console.log(result);   
-        console.log(`User: ${userWin}`);
-        console.log(`Computer: ${computerWin}`);
-    }
+function playGame(e) {
+    console.log(e.target.textContent.toLowerCase());
+    
+
+    let playerSelection = e.target.textContent.toLowerCase();
+    let computerSelection = computerPlay();
+    let result;
+    result = playRound(playerSelection, computerSelection);
+    const score = document.querySelector('.result');
+    score.textContent = result;
+    score.innerHTML += `<br>User: ${userWin}` + `<span>Computer: ${computerWin}<br>`
+    console.log(result);   
+    console.log(`User: ${userWin}`);
+    console.log(`Computer: ${computerWin}`);
     userWin > computerWin ? console.log("You won this game!!") : userWin < computerWin ? console.log("You lost this game!!") : console.log("This game was a Tie!!");
-    userWin = 0;
-    computerWin = 0;
+    
+    
+    const reset = document.createElement('button');
+    reset.innerText = 'RESET';
+    reset.setAttribute('style', 'height: 42px; font-size: 18px');
+    score.appendChild(reset);
+
+    reset.addEventListener('click', resetGame);
+    
+    function resetGame() {
+        userWin = 0;
+        computerWin = 0;
+        score.textContent = "";
+    }
 }
 
-playGame();
+// playGame();
 
 
 
